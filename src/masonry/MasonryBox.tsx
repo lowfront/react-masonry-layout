@@ -6,7 +6,7 @@ const MasonryBox: FC<PropsWithChildren<{
   padding?: number;
   style?: CSSProperties; }>> = ({
     columns = 1,
-    totalColumns,
+    totalColumns = 1,
     children,
     padding = 10,
     style,
@@ -26,7 +26,7 @@ const MasonryBox: FC<PropsWithChildren<{
       position: 'absolute',
       boxSizing: 'border-box',
       padding,
-      width: `${columns / (totalColumns ?? 1) * 100}%`,
+      width: `${Math.min(columns, totalColumns) / totalColumns * 100}%`,
       transition: 'left .3s, top .3s'
     }}
     >
