@@ -2,11 +2,11 @@ import { CSSProperties, FC, PropsWithChildren } from "react";
 
 const MasonryBox: FC<PropsWithChildren<{ 
   columns?: number;
-  totalColumns?: number;
+  width?: number;
   padding?: number;
   style?: CSSProperties; }>> = ({
     columns = 1,
-    totalColumns = 1,
+    width = 1,
     children,
     padding = 10,
     style,
@@ -26,7 +26,7 @@ const MasonryBox: FC<PropsWithChildren<{
       position: 'absolute',
       boxSizing: 'border-box',
       padding,
-      width: `${columns / totalColumns * 100}%`,
+      width: `${width * 100}%`,
       transition: 'left .3s, top .3s'
     }}
     >

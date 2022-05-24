@@ -137,9 +137,7 @@ const Masonry: FC<PropsWithChildren<{}
           left: (measured?.left ?? 1) * 100 + '%',
           top: measured.top
         },
-        // height: measured.height,
-        columns: measured.columns,
-        totalColumns: columns,
+        width: (measured.columns ?? 1) / columns,
     })
     : cloneElement(el, {
         "data-key": key,
