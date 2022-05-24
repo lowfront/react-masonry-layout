@@ -26,7 +26,7 @@ const MasonryBox: FC<PropsWithChildren<{
       position: 'absolute',
       boxSizing: 'border-box',
       padding,
-      width: `${Math.min(columns, totalColumns) / totalColumns * 100}%`,
+      width: `${columns / totalColumns * 100}%`,
       transition: 'left .3s, top .3s'
     }}
     >

@@ -83,7 +83,11 @@ const Masonry: FC<PropsWithChildren<{}
 
       // 삭제된 박스 제외 코드 추가
 
-      const childColumns = +((child as HTMLElement).dataset.columns ?? 1);
+      // 전체 컬럼이 더 작아지는 경우 크기를 줄이기 위함
+      const childColumns = Math.min( 
+        +((child as HTMLElement).dataset.columns ?? 1),
+        columns,
+      );
       
       // 삽입 컬럼 인덱스 결정
       const availableColumns = columns - childColumns + 1;
@@ -119,6 +123,7 @@ const Masonry: FC<PropsWithChildren<{}
           top: measured.top
         },
         height: measured.height,
+        columns: measured.columns,
         totalColumns: columns,
     })
     : cloneElement(el, {
