@@ -3,8 +3,7 @@
   "version": "0.0.1",
   "scripts": {
     "start": "vite",
-    "build": "tsc && vite build",
-    "preupload": "cp -r dist/* docs/",
+    "build": "tsc && vite build && cp -r dist/* docs/",
     "preview": "vite preview"
   },
   "homepage": "https://github.com/lowfront/react-masonry-layout",
