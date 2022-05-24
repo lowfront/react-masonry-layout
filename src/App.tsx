@@ -10,25 +10,33 @@ type Content = {
   author: string;
   content: string;
   genre: string;
+  columns: number;
 };
 
 function App() {
   const [count, setCount] = useState(0)
   const [contents, setContents] = useState<Content[]>([]);
   useEffect(() => {
-    const length = Math.floor(Math.random() * 30) + 5;
+    const length = Math.floor(Math.random() * 50) + 5;
     
     (async () => {
       const {data} = await ky.get(`https://fakerapi.it/api/v1/texts?_quantity=${length}`).json<{data: Content[]}>();
-      setContents(data);
+      setContents(data.map(item => {
+        return {
+          ...item,
+          columns: Math.floor(Math.random() * 2) + 1,
+        };
+      }));
     })();
   }, []);
 
   return (
     <div className="App">
       <Masonry>
-        {contents.map(({title, content}, i) => 
-          <MasonryBox key={`div-${i}`}>
+        {contents.map(({title, content, columns}, i) => 
+          <MasonryBox 
+            columns={columns}
+            key={`div-${i}`}>
             <div style={{
               position: 'relative',
               border: '1px solid #ccc',
