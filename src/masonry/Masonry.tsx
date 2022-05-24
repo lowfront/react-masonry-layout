@@ -1,5 +1,5 @@
 import { Children, cloneElement, FC, PropsWithChildren, ReactElement, useEffect, useMemo, useRef, useState } from "react";
-import { debounce } from "./utils";
+import { debounce, getScrollbarSize } from "./utils";
 
 export type Boxes = {
   [key: string]: {
@@ -18,13 +18,15 @@ const Masonry: FC<PropsWithChildren<{}
   
   const [containerWidth, setContainerWidth] = useState(container?.clientWidth ?? innerWidth);
   useEffect(() => {
-    const handler = debounce(() => {
-      console.log('resize')
-      setContainerWidth(container?.clientWidth ?? innerWidth);
-    }, 60);
+    const handler = debounce(updateContainerWidth, 60);
+
     window.addEventListener('resize', handler);
+    document.fonts.addEventListener('loadingdone', setBoxHeights);
     handler();
-    return () => window.removeEventListener('resize', handler);
+    return () => {
+      window.removeEventListener('resize', handler);
+      document.fonts.removeEventListener('loadingdone', setBoxHeights);
+    };
   }, [container]);
   
 
@@ -40,17 +42,30 @@ const Masonry: FC<PropsWithChildren<{}
 
   // [init]
   useEffect(() => {
-    console.log('container', container, containerRef);
     if (!container) return;
-    setBoxHeights();
+
+    // 스크롤바 여부에 관계없이 컨테이너 괄호 길이가 변경되었을때 업데이트 실행
+    if (!updateContainerWidth()) setBoxHeights();
+
+    // 지속적인 크기확인 및 레이아웃 조정이 없으면 보정되지않음...
+    const timer = setInterval(() => {
+      if (!updateContainerWidth()) setBoxHeights();
+    }, 100);
+    return () => clearInterval(timer);
   // chilren 자식이 변경되면 다시 계산
   // containerWidth가 변경되면 text 높이가 바뀔 수 있으므로 다시 계산
   }, [container, columns, children, containerWidth]);
 
+  const updateContainerWidth = () => {
+    const nextWidth = container ? container.clientWidth : 0;
+    if (nextWidth === containerWidth || nextWidth === containerWidth + getScrollbarSize()) return false;
+    setContainerWidth(nextWidth);
+    return true;
+  };
+
   const setBoxHeights = () => {
     if (!container) return;
     const boxes: Boxes = {};
-    console.log('column', columns);
     let needUpdate = false;
     for (const child of container.children) {
       const childClientHeight = child.clientHeight;
@@ -122,7 +137,7 @@ const Masonry: FC<PropsWithChildren<{}
           left: (measured?.left ?? 1) * 100 + '%',
           top: measured.top
         },
-        height: measured.height,
+        // height: measured.height,
         columns: measured.columns,
         totalColumns: columns,
     })
@@ -133,7 +148,7 @@ const Masonry: FC<PropsWithChildren<{}
         style: {
           visibility: "hidden"
         },
-        height: 0,
+        // height: 0,
         totalColumns: columns,
     });
   });
