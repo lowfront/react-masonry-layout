@@ -146,8 +146,6 @@ const Masonry: FC<PropsWithChildren<{}
         style: {
           visibility: "hidden"
         },
-        // height: 0,
-        totalColumns: columns,
     });
   });
 

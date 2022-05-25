@@ -22,9 +22,14 @@ function App() {
     (async () => {
       const {data} = await ky.get(`https://fakerapi.it/api/v1/texts?_quantity=${length}`).json<{data: Content[]}>();
       setContents(data.map(item => {
+        const val = Math.random();
+        const columns = val > 0.4 ? 1 
+          : val > 0.2 ? 2
+          : val > 0.1 ? 3
+          : 1;
         return {
           ...item,
-          columns: Math.floor(Math.random() * 2) + 1,
+          columns,
         };
       }));
     })();
